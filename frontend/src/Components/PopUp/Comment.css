@@ -1,0 +1,36 @@
+.outer_div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 7px;
+}
+
+.flex_column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex_row {
+    display: flex;
+    flex-direction: row;
+}
+
+.username {
+    font-size: 15px;
+}
+
+.text {
+    font-size: 13px;
+    margin-left: 3px;
+}
+
+.date {
+    font-size: 10px;
+    margin-left: 10px;
+}
+
+.form_input {
+    height: 30px;
+}

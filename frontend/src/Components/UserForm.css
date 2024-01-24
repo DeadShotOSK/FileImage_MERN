@@ -1,0 +1,71 @@
+.form {
+    margin-top: 12rem;
+    margin-left: 35%;
+    background: #fff;
+    border: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    padding: 1rem;
+    width: 30%;
+    align-items: center;
+    text-align: center;
+}
+
+.heading {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.image {
+    width: 400px;
+    background: #fff;
+    border: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    margin: 10px;
+    padding: 10px;
+    align-items: center;
+    text-align: center;
+    float: left;
+}
+
+.imageName {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: rgb(12, 145, 12);
+}
+
+.imageUploader {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-left: -250px;
+}
+
+.imageCaption {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: small;
+    margin-left: -250px;
+}
+
+.flex_column {
+    display: flex;
+    flex-direction: column;
+  }
+  
+.flex_row {
+    display: flex;
+    flex-direction: row;
+}
+
+.comment_button {
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.card {
+    width: 30rem;
+    margin: 10px;
+}
+
+.card_title {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+}

@@ -1,0 +1,10 @@
+.pagenotfound {
+    background-color: ghostwhite;
+    text-align: center;
+    margin-top: 170px;
+    width: 100%;
+}
+
+.error {
+    color: red;
+}

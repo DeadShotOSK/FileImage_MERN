@@ -1,0 +1,27 @@
+.container {
+    margin-top: 15px;
+    background-color: rgb(245, 245, 245);
+    text-align: center;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    width: 30%;
+    
+}
+
+.container__username {
+    color: blueviolet;
+    margin: 3px 2px;
+    padding: 5px;
+    
+}
+
+.container__email {
+    color: brown;
+    margin: 3px 2px;
+    padding: 5px;
+}
+
+.container__mobile {
+    color: brown;
+    margin: 3px 2px;
+    padding: 5px;
+}
