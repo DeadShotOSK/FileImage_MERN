@@ -123,7 +123,7 @@ exports.userDetails = async (req, res) => {
 
         jwt.verify(req.token, secretKey, (err, authData) => {
             if (err) {
-                console.log(err);
+                // console.log(err);
                 res.status(201).json({
                     message: "Invalid Token",
                 });

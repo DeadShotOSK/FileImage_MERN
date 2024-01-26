@@ -19,7 +19,7 @@ import ImageComment from "./PopUp/ImageComment";
 import FileComment from "./PopUp/FileComment";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./UserForm.css";
+import "./ShowImage.css";
 
 const ShowImage = ({ socket }) => {
   const [isLoggedIn, setIsLoggedIn] = useState("true");

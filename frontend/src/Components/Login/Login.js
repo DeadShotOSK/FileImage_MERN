@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
 
 import "./Login.css";
 
@@ -20,6 +22,7 @@ const Login = () => {
 
   const [mandatory, setMandatory] = useState(false);
   const [valid, setValid] = useState(false);
+  const [showPassword, setShowPssword] = useState(true);
 
   const [message] = useState({
     "EMAILID_ERROR": "Please enter a valid email",
@@ -36,6 +39,10 @@ const Login = () => {
       [name]: value,
     });
     validateField(name, value);
+  };
+
+  const handleShow = () => {
+    setShowPssword(!showPassword);
   };
 
   const validateField = (name, value) => {
@@ -110,7 +117,7 @@ const Login = () => {
 
   return (
     <>
-      <form className="form">
+      <form className="form_login">
         <h2>Login</h2>
         <div className="login">
           <label>Email</label>
@@ -124,16 +131,20 @@ const Login = () => {
           <br />
           {formErrors.emailIdError && <span className="text-danger">{formErrors.emailIdError}</span>}
         </div>
-        <div className="login">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={user.password}
-            placeholder="Password"
-            onChange={handleChange}
-          />
-          <br />
+        <div>
+          <div className="login flex-row">
+            <label>Password</label>
+            <input
+              type={showPassword ? "password" : "text"}
+              name="password"
+              value={user.password}
+              placeholder="Password"
+              onChange={handleChange}
+            />
+            <div className="eye-icon">
+              {showPassword ? <IoMdEye size={23} onClick={handleShow} /> : <IoMdEyeOff onClick={handleShow} size={23} />}
+            </div>
+          </div>
           {formErrors.passwordError && <span className="text-danger">{formErrors.passwordError}</span>}
         </div>
         {valid
@@ -147,7 +158,7 @@ const Login = () => {
         <p>
           Please register here <Link to="/register">Sign up</Link>
         </p>
-          {mandatory && <span className="text-danger">{mandatory}</span>}
+        {mandatory && <span className="text-danger">{mandatory}</span>}
       </form>
     </>
   );

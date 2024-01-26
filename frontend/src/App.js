@@ -39,7 +39,7 @@ function App() {
         // setAllUsers(res.data.allUsers);
         dispatch(addUsers(res.data.allUsers));
       });
-  }, []);
+  }, [dispatch, token]);
 
   // For Images => redux store
   useEffect(() => {
@@ -56,7 +56,7 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [dispatch]);
 
   // For Files => redux store
   useEffect(() => {
@@ -73,7 +73,7 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [dispatch]);
 
   return ( 
     <>

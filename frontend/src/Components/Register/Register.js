@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
 
 import "./Register.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -25,6 +27,7 @@ const Register = () => {
 
   const [mandatory, setMandatory] = useState(false);
   const [valid, setValid] = useState(false);
+  const [showPassword, setShowPssword] = useState(true);
 
   const [message] = useState({
     "USER_NAME_ERROR": "Please provide a username",
@@ -34,6 +37,7 @@ const Register = () => {
     "MOBILE_ERROR": "Enter a valid mobile number",
     "MANDATORY": "Please fill all the fields"
   });
+  // use at least one lower & uper case letter, number and symbol
 
   const emailRegex = /^\S+@\S+\.\S+$/;
 
@@ -46,6 +50,10 @@ const Register = () => {
       [name]: value,
     });
     validateField(name, value);
+  };
+
+  const handleShow = () => {
+    setShowPssword(!showPassword);
   };
 
   const validateField = (name, value) => {
@@ -72,15 +80,15 @@ const Register = () => {
         }
         break;
 
-        case "password":
-          if (value.length <= 4) {
-            formErrors.passwordError = message.PASSWORD_ERROR
-            setValid(true);
-          } else {
-            formErrors.passwordError = ""
-            setValid(false);
-          }
-          break;
+      case "password":
+        if (value.length <= 4) {
+          formErrors.passwordError = message.PASSWORD_ERROR
+          setValid(true);
+        } else {
+          formErrors.passwordError = ""
+          setValid(false);
+        }
+        break;
 
       case "confirmPassword":
         if (value !== user.password) {
@@ -131,7 +139,7 @@ const Register = () => {
 
   return (
     <>
-      <form className="form">
+      <form className="form_register">
         <h2>Register Here</h2>
         <div className="register">
           <label>User Name</label>
@@ -181,16 +189,20 @@ const Register = () => {
           <br />
           {formErrors.passwordError && <span className="text-danger">{formErrors.passwordError}</span>}
         </div>
-        <div className="register">
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={user.confirmPassword}
-            placeholder="Confirm Password"
-            onChange={handleChange}
-          />
-          <br />
+        <div>
+          <div className="register flex-row">
+            <label>Confirm Password</label>
+            <input
+              type={showPassword ? "password" : "text"}
+              name="confirmPassword"
+              value={user.confirmPassword}
+              placeholder="Confirm Password"
+              onChange={handleChange}
+            />
+            <div className="eye-icon">
+              {showPassword ? <IoMdEye size={23} onClick={handleShow} /> : <IoMdEyeOff onClick={handleShow} size={23} />}
+            </div>
+          </div>
           {formErrors.confirmPasswordError && <span className="text-danger">{formErrors.confirmPasswordError}</span>}
         </div>
         <PasswordStrengthMeter password={user.password} />
@@ -201,8 +213,11 @@ const Register = () => {
           : <button className="btn btn-success" onClick={handleRegister}>
             Register
           </button>}
-          <br />
-          {mandatory && <span className="text-danger">{mandatory}</span>}
+        <br />
+        <p>
+          Please login here <Link to="/login">Login</Link>
+        </p>
+        {mandatory && <span className="text-danger">{mandatory}</span>}
       </form>
     </>
   );
