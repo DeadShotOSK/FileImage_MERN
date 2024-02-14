@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Cookies from "js-cookie";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,7 +7,7 @@ import PageNotFound from "../PageNotFound";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ImageUpload.css";
 
-const ImageForm = () => {
+const ImageForm = ({ isLoggedIn }) => {
   const [formData, setFormData] = useState({
     title: "",
     caption: "",
@@ -16,21 +15,27 @@ const ImageForm = () => {
   });
   const [imageurl, setImageUrl] = useState("");
 
+  const [formErrors, setFormErrors] = useState({
+    titleError: "",
+    captionError: ""
+  });
+
+  const [mandatory, setMandatory] = useState(false);
+  const [valid, setValid] = useState(false);
+
+  const [message] = useState({
+    "TITLE_ERROR": "Title should be at least 3 letter",
+    "CAPTION_ERROR": "Enter a caption",
+    "MANDATORY": "Please fill all the fields"
+  });
+
   // for preview image
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
 
-  const [isLoggedIn, setIsLoggedIn] = useState("true");
-
-  const token = Cookies.get("token");
   const { userid } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (token === null || token === undefined) {
-      setIsLoggedIn("false");
-    }
-  }, [token]);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -50,7 +55,40 @@ const ImageForm = () => {
       ...formData,
       [name]: value,
     });
+    console.log(name, value)
+    validateField(name, value);
   };
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case "title":
+        if (value.length < 3) {
+          setFormErrors({ titleError: message.TITLE_ERROR });
+          setValid(true);
+        } else {
+          setFormErrors({ titleError: "" });
+          setValid(false);
+        }
+        break;
+
+      case "caption":
+        if (value.length < 3) {
+          setFormErrors({ captionError: message.CAPTION_ERROR });
+          setValid(true);
+        } else {
+          setFormErrors({ captionError: "" });
+          setValid(false);
+        }
+        break;
+
+      default:
+        setFormErrors({
+          titleError: "",
+          captionError: ""
+        });
+        break;
+    }
+  }
 
   const getImage = (e) => {
     setImageUrl(e.target.files[0]);
@@ -70,26 +108,26 @@ const ImageForm = () => {
     data.append("file", imageurl);
     data.append("radio", formData.radio);
     if (!formData.title || !formData.caption || !imageurl || !formData.radio) {
-      alert("Please fill all the fields!");
+      setMandatory("Please fill all the fields!");
     } else {
       axios
-      .post(`http://localhost:7000/fi/createImage/${userid}`, data)
-      .then((res) => {
-        if (res.data.status === "Success") {
-          alert(res.data.message);
-          navigate(`/image/${userid}`);
-          window.location.reload();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .post(`http://localhost:7000/fi/createImage/${userid}`, data)
+        .then((res) => {
+          if (res.data.status === "Success") {
+            alert(res.data.message);
+            navigate(`/image/${userid}`);
+            window.location.reload();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
   return (
     <>
-      {isLoggedIn === "true" && (
+      {isLoggedIn ? (
         <form className="formImage" onSubmit={handleUploadImage}>
           <h2>Upload Image/File</h2>
           <div className="imageElement">
@@ -101,6 +139,7 @@ const ImageForm = () => {
               placeholder="Enter title"
               onChange={handleChange}
             />
+            <div>{formErrors.titleError && <span className="text-danger">{formErrors.titleError}</span>}</div>
           </div>
           <div className="imageElement">
             <label htmlFor="caption">Caption</label>
@@ -111,23 +150,24 @@ const ImageForm = () => {
               placeholder="Enter caption"
               onChange={handleChange}
             />
+            <div>{formErrors.captionError && <span className="text-danger">{formErrors.captionError}</span>}</div>
           </div>
           <div className="imageElement">
             <label htmlFor="image/file">Select Image</label>
             <input type="file" name="file" onChange={getImage} required />
             <br />
-            {selectedFile && <img src={preview} height={200} width={300} alt="#"/>}
+            {selectedFile && <img src={preview} height={200} width={300} alt="#" />}
           </div>
           <div>
             <label htmlFor="image" className="radio_image">Image</label>
-            <input type="radio" name="radio" value="Image" onChange={handleChange} checked={formData.radio === "Image"}/>
+            <input type="radio" name="radio" value="Image" onChange={handleChange} checked={formData.radio === "Image"} />
             <label htmlFor="file" className="radio_file">File</label>
-            <input type="radio" name="radio" value="File" onChange={handleChange} checked={formData.radio === "File"}/>
+            <input type="radio" name="radio" value="File" onChange={handleChange} checked={formData.radio === "File"} />
           </div>
-          <button className="btn btn-success">Upload</button>
+          <div>{mandatory && <span className="text-danger">{mandatory}</span>}</div>
+          {valid ? <button disabled className="btn btn-success">Upload</button> : <button className="btn btn-success">Upload</button>}
         </form>
-      )}
-      {isLoggedIn === "false" && <PageNotFound />}
+      ) : <PageNotFound />}
     </>
   );
 };

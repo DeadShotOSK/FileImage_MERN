@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Cookies from "js-cookie";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
@@ -9,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addImages, getAllImages } from "../Redux/ImageReducers";
 import { FaRegComment } from "react-icons/fa6";
 import { addfiles, getAllFiles } from "../Redux/FileReducers";
+import { useMediaQuery } from "react-responsive";
 
 import PageNotFound from "./PageNotFound";
 import LikeImageButton from "./LikeDislikeButtons/LikeImageButton";
@@ -21,8 +21,7 @@ import FileComment from "./PopUp/FileComment";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ShowImage.css";
 
-const ShowImage = ({ socket }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState("true");
+const ShowImage = ({ socket, isLoggedIn }) => {
   const [search, setSearch] = useState("");
   const [imageCommentBox, setimageCommentBox] = useState(false);
   const [fileCommentBox, setFileCommentBox] = useState(false);
@@ -37,7 +36,7 @@ const ShowImage = ({ socket }) => {
   });
 
   const imageCommentClickHandler = (e, id, comments) => {
-    !imageCommentBox ? setimageCommentBox(true) : setimageCommentBox(false);
+    setimageCommentBox(!imageCommentBox);
     setImageCommentValues({
       imageId: id,
       imageComments: comments,
@@ -45,18 +44,18 @@ const ShowImage = ({ socket }) => {
   };
 
   const fileCommentClickHandler = (e, id, comments) => {
-    !fileCommentBox ? setFileCommentBox(true) : setFileCommentBox(false);
+    setFileCommentBox(!fileCommentBox);
     setFileCommentValues({
       fileId: id,
       fileComments: comments,
     });
   };
-
-  const token = Cookies.get("token");
   const { userid } = useParams();
   const dispatch = useDispatch();
   const image = useSelector(getAllImages);
   const getData = useSelector(getAllFiles);
+
+  const isTableOrMobile = useMediaQuery({ query: "(max-width: 992px)" });
 
   // Socket Connections
   useEffect(() => {
@@ -103,19 +102,13 @@ const ShowImage = ({ socket }) => {
       });
   };
 
-  useEffect(() => {
-    if (token === null || token === undefined) {
-      setIsLoggedIn("false");
-    }
-  }, [token]);
-
   const searchHandler = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
   };
   return (
     <>
-      {isLoggedIn === "true" && (
+      {isLoggedIn ? (
         <>
           <div className="flex_column" style={{ alignItems: "center" }}>
             <div className="flex_column" style={{ alignItems: "center" }} >
@@ -130,7 +123,7 @@ const ShowImage = ({ socket }) => {
             </div>
           </div>
           <br />
-          <div className="flex_row">
+          <div className={isTableOrMobile ? "flex-column" : "flex_row"}>
             <div className="flex_column" style={{ alignItems: "center", margin: "auto" }}>
               <div>
                 {image
@@ -151,9 +144,8 @@ const ShowImage = ({ socket }) => {
                         </Card.Title>
                         <Card.Img
                           variant="top"
-                          src={`http://localhost:7000/fi/showImage/${
-                            data.image.split("\\")[1]
-                          }`}
+                          src={`http://localhost:7000/fi/showImage/${data.image.split("\\")[1]
+                            }`}
                         />
                         <Card.Body>
                           <Card.Title>{data.title}</Card.Title>
@@ -195,7 +187,7 @@ const ShowImage = ({ socket }) => {
                                 <Card.Text>{data.like.length} like</Card.Text>
                               )}
                             </div>
-                            <div style={{marginLeft: "10px"}}>
+                            <div style={{ marginLeft: "10px" }}>
                               {data.comments.length >= 2 ? (
                                 <Card.Text>
                                   {data.comments.length} comments
@@ -288,7 +280,7 @@ const ShowImage = ({ socket }) => {
                                 <Card.Text>{data.like.length} like</Card.Text>
                               )}
                             </div>
-                            <div style={{marginLeft: "10px"}}>
+                            <div style={{ marginLeft: "10px" }}>
                               {data.comments.length >= 2 ? (
                                 <Card.Text>
                                   {data.comments.length} comments
@@ -317,8 +309,7 @@ const ShowImage = ({ socket }) => {
             </div>
           </div>
         </>
-      )}
-      {isLoggedIn === "false" && <PageNotFound />}
+      ) : <PageNotFound />}
     </>
   );
 };

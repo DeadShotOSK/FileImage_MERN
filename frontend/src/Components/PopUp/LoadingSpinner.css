@@ -1,0 +1,21 @@
+#loader_outerDiv {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#loader {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    border: 7px solid #ddd;
+    border-top-color: #333;
+    animation: rotate 1s infinite;
+}
+
+@keyframes rotate {
+    100% {
+        rotate: 360deg;
+    }
+}

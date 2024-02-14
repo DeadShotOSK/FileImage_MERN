@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MDBInputGroup, MDBInput } from "mdb-react-ui-kit";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
+import EmojiPicker from 'emoji-picker-react';
+import { CiFaceSmile } from 'react-icons/ci';
 
 import './Comment.css';
 
@@ -12,13 +14,22 @@ const ImageComment = (props) => {
     imageId: "",
   });
 
-  const onChangeHandler = (e) => {
+  const [pickkBox, setPickBox] = useState(false);
+  const [input, setInput] = useState("");
+  const handlePick = () => {
+    setPickBox(!pickkBox);
+  }
+  const clickEmoji = (e) => {
+    setInput((prevInput) => prevInput + e.emoji);
+  }
+
+  useEffect(() => {
     setData({
-      text: e.target.value,
+      text: input,
       userId: props.userId,
       imageId: props.imageId,
     });
-  };
+  }, [input, props.userId, props.imageId]);
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
@@ -55,17 +66,19 @@ const ImageComment = (props) => {
                 </i>
               </div>
             );
-          })} 
+          })}
         </div>
         <form>
           <div className="flex_row">
             <MDBInputGroup>
-              <MDBInput placeholder="Comment here" onChange={onChangeHandler} className="form_input" />
+              <MDBInput placeholder="Comment here" value={input} onChange={(e) => setInput(e.target.value)} className="form_input" />
             </MDBInputGroup>
+            <CiFaceSmile className="emoji-picker" size={20} onClick={handlePick}></CiFaceSmile>
             <Button variant="primary" size="sm" onClick={onSubmitHandler} className="form_input">
               Post
             </Button>
           </div>
+            {pickkBox && <EmojiPicker onEmojiClick={clickEmoji} />}
         </form>
       </div>
     </>

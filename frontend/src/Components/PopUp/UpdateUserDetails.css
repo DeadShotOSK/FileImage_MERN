@@ -1,0 +1,25 @@
+.formUpdate {
+    margin: auto;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    border-radius: 60px;
+    padding: 1rem;
+    align-items: center;
+    text-align: center;
+    border: 1px solid gray;
+  }
+  
+  .username > input {
+    border-radius: 8px;
+    height: 30px;
+    border: 1px solid #dddfe2;
+    outline: none;
+    color: #1d2129;
+    margin: 5px 0;
+    padding: 7px 9px;
+    width: 50%;
+    font-size: 1rem;
+    margin-left: 3px;
+  }

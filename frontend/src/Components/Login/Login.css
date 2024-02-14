@@ -28,8 +28,10 @@
     margin-right: 7px;
 }
 
-.eye-icon {
-    margin-left: 2px;
+.eye-icon_login {
+    position: absolute;
+    margin-left: 56%;
+    cursor: pointer;
 }
 
 .flex-row {

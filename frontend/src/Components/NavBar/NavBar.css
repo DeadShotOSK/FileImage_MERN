@@ -1,0 +1,76 @@
+.logout_button {
+    border-radius: 5px;
+    background-color: #e63737;
+    color: white;
+    text-align: center;
+    margin-left: 10px;
+    position: absolute;
+    right: 0;
+    transform: translate(-20px, 0);
+}
+
+.hamBurger {
+    position: absolute;
+    right: 0;
+    transform: translate(-15px, 0);
+    cursor: pointer;
+    margin-top: 4px;
+    padding: 2.5px;
+    border: 1px solid grey;
+    border-radius: 35%;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    transition: all 0.3s ease-out;
+}
+
+.myProfile_button {
+    position: absolute;
+    right: 0;
+    transform: translate(-100px, 0);
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+.username_title {
+    color: green;
+    border: 1px solid green;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+}
+
+.mainNav {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.ModalOpen {
+    animation: openModal 0.4s ease-out forwards;
+}
+
+.ModalClosed {
+    animation: closeModal 0.4s ease-out forwards;
+}
+
+@keyframes openModal {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes closeModal {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-100%);
+    }
+}

@@ -5,9 +5,12 @@ import Cookies from 'js-cookie';
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 
-import "./Login.css";
+// import LoadingSpinner from "../PopUp/LodingSpinner";
 
-const Login = () => {
+import "./Login.css";
+import PageNotFound from "../PageNotFound";
+
+const Login = ({ isLoggedIn, loginLogout }) => {
   const [user, setuser] = useState({
     email: "",
     password: "",
@@ -23,6 +26,7 @@ const Login = () => {
   const [mandatory, setMandatory] = useState(false);
   const [valid, setValid] = useState(false);
   const [showPassword, setShowPssword] = useState(true);
+  // const [loading, setLoading] = useState(false);
 
   const [message] = useState({
     "EMAILID_ERROR": "Please enter a valid email",
@@ -98,14 +102,14 @@ const Login = () => {
               localStorage.setItem(
                 "user",
                 JSON.stringify({
-                  // ...res.data.data,
                   data: res.data.data,
                   type: res.data.type,
                   // token: res.data.auth.token, // we can also store token inside local storage
                 })
               );
               navigate(`/image/${res.data.data._id}`);
-              window.location.reload();
+              loginLogout(true);
+              // window.location.reload();
             }
           })
           .catch((err) => {
@@ -117,49 +121,53 @@ const Login = () => {
 
   return (
     <>
-      <form className="form_login">
-        <h2>Login</h2>
-        <div className="login">
-          <label>Email</label>
-          <input
-            type="text"
-            name="email"
-            value={user.email}
-            placeholder="Email"
-            onChange={handleChange}
-          />
-          <br />
-          {formErrors.emailIdError && <span className="text-danger">{formErrors.emailIdError}</span>}
-        </div>
-        <div>
-          <div className="login flex-row">
-            <label>Password</label>
+      {isLoggedIn ? (
+        <PageNotFound />
+      ) : (
+        <form className="form_login">
+          <h2>Login</h2>
+          <div className="login">
+            <label>Email</label>
             <input
-              type={showPassword ? "password" : "text"}
-              name="password"
-              value={user.password}
-              placeholder="Password"
+              type="text"
+              name="email"
+              value={user.email}
+              placeholder="Email"
               onChange={handleChange}
             />
-            <div className="eye-icon">
-              {showPassword ? <IoMdEye size={23} onClick={handleShow} /> : <IoMdEyeOff onClick={handleShow} size={23} />}
-            </div>
+            <div>{formErrors.emailIdError && <span className="text-danger">{formErrors.emailIdError}</span>}</div>
           </div>
-          {formErrors.passwordError && <span className="text-danger">{formErrors.passwordError}</span>}
-        </div>
-        {valid
-          ? <button disabled className="btn btn-success" onClick={handleLogin}>
-            Login
-          </button>
-          : <button className="btn btn-success" onClick={handleLogin}>
-            Login
-          </button>}
-        <br />
-        <p>
-          Please register here <Link to="/register">Sign up</Link>
-        </p>
-        {mandatory && <span className="text-danger">{mandatory}</span>}
-      </form>
+          <div>
+            <div className="login flex-row">
+              <label>Password</label>
+              <input
+                type={showPassword ? "password" : "text"}
+                name="password"
+                value={user.password}
+                placeholder="Password"
+                onChange={handleChange}
+              />
+              <div className="eye-icon_login">
+                {showPassword ? <IoMdEye size={23} onClick={handleShow} /> : <IoMdEyeOff onClick={handleShow} size={23} />}
+              </div>
+            </div>
+            {formErrors.passwordError && <span className="text-danger">{formErrors.passwordError}</span>}
+          </div>
+          <div>{mandatory && <span className="text-danger">{mandatory}</span>}</div>
+          {valid
+            ? <button disabled className="btn btn-success" onClick={handleLogin}>
+              Login
+            </button>
+            : <button className="btn btn-success" onClick={handleLogin}>
+              Login
+            </button>}
+          <br />
+          <p>
+            Please register here <Link to="/register">Sign up</Link>
+          </p>
+        </form>
+      )}
+      {/* <LoadingSpinner /> */}
     </>
   );
 };

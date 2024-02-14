@@ -150,8 +150,7 @@ const Register = () => {
             placeholder="User Name"
             onChange={handleChange}
           />
-          <br />
-          {formErrors.usernameError && <span className="text-danger">{formErrors.usernameError}</span>}
+          <div>{formErrors.usernameError && <span className="text-danger">{formErrors.usernameError}</span>}</div>
         </div>
         <div className="register">
           <label>Email</label>
@@ -162,8 +161,7 @@ const Register = () => {
             placeholder="Email"
             onChange={handleChange}
           />
-          <br />
-          {formErrors.emailIdError && <span className="text-danger">{formErrors.emailIdError}</span>}
+          <div>{formErrors.emailIdError && <span className="text-danger">{formErrors.emailIdError}</span>}</div>
         </div>
         <div className="register">
           <label>Mobile</label>
@@ -174,8 +172,7 @@ const Register = () => {
             placeholder="Enter mobile no."
             onChange={handleChange}
           />
-          <br />
-          {formErrors.mobileError && <span className="text-danger">{formErrors.mobileError}</span>}
+          <div>{formErrors.mobileError && <span className="text-danger">{formErrors.mobileError}</span>}</div>
         </div>
         <div className="register">
           <label>Password</label>
@@ -186,8 +183,7 @@ const Register = () => {
             placeholder="Password"
             onChange={handleChange}
           />
-          <br />
-          {formErrors.passwordError && <span className="text-danger">{formErrors.passwordError}</span>}
+          <div>{formErrors.passwordError && <span className="text-danger">{formErrors.passwordError}</span>}</div>
         </div>
         <div>
           <div className="register flex-row">
@@ -199,13 +195,14 @@ const Register = () => {
               placeholder="Confirm Password"
               onChange={handleChange}
             />
-            <div className="eye-icon">
+            <div className="eye-icon_register">
               {showPassword ? <IoMdEye size={23} onClick={handleShow} /> : <IoMdEyeOff onClick={handleShow} size={23} />}
             </div>
           </div>
-          {formErrors.confirmPasswordError && <span className="text-danger">{formErrors.confirmPasswordError}</span>}
+          <div>{formErrors.confirmPasswordError && <span className="text-danger">{formErrors.confirmPasswordError}</span>}</div>
         </div>
         <PasswordStrengthMeter password={user.password} />
+        <div>{mandatory && <span className="text-danger">{mandatory}</span>}</div>
         {valid
           ? <button disabled className="btn btn-success" onClick={handleRegister}>
             Register
@@ -217,7 +214,6 @@ const Register = () => {
         <p>
           Please login here <Link to="/login">Login</Link>
         </p>
-        {mandatory && <span className="text-danger">{mandatory}</span>}
       </form>
     </>
   );

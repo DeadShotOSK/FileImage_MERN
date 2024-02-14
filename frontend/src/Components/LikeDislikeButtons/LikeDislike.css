@@ -1,0 +1,16 @@
+.like {
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.dislike {
+    cursor: pointer;
+    margin-left: 4px;
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.like:hover, .dislike:hover {
+    transform: scale(1.2);
+}

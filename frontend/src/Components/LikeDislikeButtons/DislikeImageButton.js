@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import { BsFillHeartbreakFill } from "react-icons/bs";
 
+import './LikeDislike.css';
+
 const DislikeImageButton = (props) => {
     const handleDislike = (e) => {
         axios
@@ -14,7 +16,7 @@ const DislikeImageButton = (props) => {
     }
     return (
         <>
-            <BsFillHeartbreakFill style={{ cursor: "pointer", marginLeft: "4px" }} color={props.colour} size="22" onClick={handleDislike} />
+            <BsFillHeartbreakFill className="dislike" color={props.colour} size="22" onClick={handleDislike} />
         </>
     );
 }

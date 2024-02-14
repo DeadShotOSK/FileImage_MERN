@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import { GoHeartFill } from "react-icons/go";
 
+import './LikeDislike.css';
+
 const LikeFileButton = (props) => {
 
     const handleLike = (e) => { 
@@ -16,7 +18,7 @@ const LikeFileButton = (props) => {
     }
     return (
         <>
-            <GoHeartFill style={{ cursor: "pointer" }} color={props.colour} size="25" onClick={handleLike} />
+            <GoHeartFill className="like" color={props.colour} size="25" onClick={handleLike} />
         </>
     );
 }

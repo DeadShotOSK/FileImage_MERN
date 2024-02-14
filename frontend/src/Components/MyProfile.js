@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAllFiles, addfiles } from "../Redux/FileReducers";
 import { getAllImages, addImages } from "../Redux/ImageReducers";
 import { FaRegComment } from "react-icons/fa6";
+import { useMediaQuery } from "react-responsive";
 
 import LikeImageButton from "./LikeDislikeButtons/LikeImageButton";
 import DislikeImageButton from "./LikeDislikeButtons/DislikeImageButton";
@@ -18,13 +19,17 @@ import UpdateImage from "./PopUp/UpdateImage";
 import UpdateFile from "./PopUp/UpdateFile";
 import ImageComment from "./PopUp/ImageComment";
 import FileComment from "./PopUp/FileComment";
+import UpdateUserDetails from "./PopUp/UpdateUserDetails";
 import PageNotFound from "./PageNotFound";
 
 import "./MyProfile.css";
 
-const MyProfile = ({ socket }) => {
+const MyProfile = ({ socket, isLoggedIn }) => {
   const [myProfile, setMyProfile] = useState({});
-  const [isLoggedIn, setIsLoggedIn] = useState("true");
+  const [updateuserBox, setUpdateUserBox] = useState(false);
+  const userUpdateHandler = () => {
+    setUpdateUserBox(!updateuserBox);
+  }
 
   // Update Image and File
   const [updateImageData, setUpdateImageData] = useState({
@@ -72,7 +77,7 @@ const MyProfile = ({ socket }) => {
   });
   const [imageCommentValues, setImageCommentValues] = useState({
     imageId: '',
-    imageComments: [] 
+    imageComments: []
   });
 
   const fileCommentClickHandler = (e, id, comments) => {
@@ -92,20 +97,10 @@ const MyProfile = ({ socket }) => {
 
   const { userid } = useParams();
 
-  const [updateData, setUpdateData] = useState({
-    newUserName: "",
-    mobile: "",
-  });
+  const isTableOrMobile = useMediaQuery({ query: "(max-width: 992px)" });
 
   const token = Cookie.get("token");
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
-
-  useEffect(() => {
-    if (token === null || token === undefined) {
-      setIsLoggedIn("false");
-    }
-  }, [token]);
 
   useEffect(() => {
     // console.log(myProfile);
@@ -118,13 +113,13 @@ const MyProfile = ({ socket }) => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, userid]);
+  }, [token, userid, updateuserBox]);
 
   // myProfile.userdetails = useSelector(getAllUsers).filter(data => data._id.includes(userid))[0];
-  myProfile.images = useSelector(getAllImages).filter((data) =>
+  const images = useSelector(getAllImages).filter((data) =>
     data.creator._id.includes(userid)
   );
-  myProfile.files = useSelector(getAllFiles).filter((data) =>
+  const files = useSelector(getAllFiles).filter((data) =>
     data.creator._id.includes(userid)
   );
   // console.log(myProfile);
@@ -170,29 +165,6 @@ const MyProfile = ({ socket }) => {
       .catch((err) => {
         console.log(err);
         alert("Something went wrong, Please sign in");
-      });
-  };
-
-  const handleChange = (e) => {
-    let { name, value } = e.target;
-    setUpdateData({
-      ...updateData,
-      [name]: value,
-    });
-  };
-
-  const updateDetails = (e) => {
-    // e.preventDefault();
-    const headers = { Authorization: `Bearer ${token}` };
-    axios
-      .put(`http://localhost:7000/users/updatedetails/${userid}`, updateData, {
-        headers,
-      })
-      .then((res) => {
-        alert(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   };
 
@@ -283,61 +255,40 @@ const MyProfile = ({ socket }) => {
 
   return (
     <div>
-      {isLoggedIn === "true" && (
+      {isLoggedIn ? (
         <div className="main">
           <div>
             <h4 className="heading_profile">
               Welcome {myProfile.username}, your details are...
             </h4>
-            <div className="flex_row" style={{marginTop: "2rem",}}>
-              <div className="container_profile">
-                <div className="container_profile__username">
-                  User Name: {myProfile.username}
-                </div>
-                <div className="container_profile__email">
-                  Email: {myProfile.email}
-                </div>
-                <div className="container_profile__mobile">
-                  Mobile: {myProfile.mobile}
-                </div>
+            <div className="container_profile">
+              <div className="container_profile__username">
+                User Name: {myProfile.username}
               </div>
-
-              <form className="formUpdate" onSubmit={updateDetails}>
-                <h5>Update Details</h5>
-                <div className="username">
-                  <label>Name</label>
-                  <input
-                    type="text"
-                    name="newUserName"
-                    value={updateData.newUserName}
-                    placeholder="new name"
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="username">
-                  <label>Mobile</label>
-                  <input
-                    type="text"
-                    name="mobile"
-                    value={updateData.mobile}
-                    placeholder="new mobile"
-                    onChange={handleChange}
-                  />
-                </div>
-                <button className="btn btn-warning  btn-sm" type="submit">
-                  Update
-                </button>
-              </form>
+              <div className="container_profile__email">
+                Email: {myProfile.email}
+              </div>
+              <div className="container_profile__mobile">
+                Mobile: {myProfile.mobile}
+              </div>
+              <button className="btn btn-warning  btn-sm" onClick={userUpdateHandler}>
+                Update Details
+              </button>
+              <div className={updateuserBox ? "userDetailsBoxOpen" : "userDetailsBoxClosed"}>
+                {updateuserBox && (
+                  <UpdateUserDetails token={token} userid={userid} />
+                )}
+              </div>
             </div>
           </div>
           <br />
           <br />
-          <div className="flex_row">
-            <div className="flex_column" style={{alignItems: "center", margin: "auto"}}>
+          <div className={isTableOrMobile ? "flex-column" : "flex_row"}>
+            <div className="flex_column" style={{ alignItems: "center", margin: "auto" }}>
               <h4 className="data_profile">Images upload by you</h4>
               <div>
-                {myProfile.images &&
-                  myProfile.images.map((data, index) => {
+                {images &&
+                  images.map((data, index) => {
                     return (
                       <Card
                         className="card"
@@ -348,9 +299,8 @@ const MyProfile = ({ socket }) => {
                         </Card.Title>
                         <Card.Img
                           variant="top"
-                          src={`http://localhost:7000/fi/showImage/${
-                            data.image.split("\\")[1]
-                          }`}
+                          src={`http://localhost:7000/fi/showImage/${data.image.split("\\")[1]
+                            }`}
                         />
                         <Card.Body>
                           <Card.Title>{data.title}</Card.Title>
@@ -392,7 +342,7 @@ const MyProfile = ({ socket }) => {
                                 <Card.Text>{data.like.length} like</Card.Text>
                               )}
                             </div>
-                            <div style={{marginLeft: "10px"}}>
+                            <div style={{ marginLeft: "10px" }}>
                               {data.comments.length >= 2 ? (
                                 <Card.Text>
                                   {data.comments.length} comments
@@ -431,6 +381,7 @@ const MyProfile = ({ socket }) => {
                           </Button>
                           {updateImageBox && updateImageData.updateImageId === data._id && (
                             <UpdateImage
+                              className="update_box-transition"
                               title={updateImageData.title}
                               imageId={updateImageData.updateImageId}
                               userId={userid}
@@ -445,8 +396,8 @@ const MyProfile = ({ socket }) => {
             <div className="flex_column" style={{ alignItems: "center", margin: "auto" }}>
               <h4 className="data_profile">Files upload by you</h4>
               <div>
-                {myProfile.files &&
-                  myProfile.files.map((data, index) => {
+                {files &&
+                  files.map((data, index) => {
                     return (
                       <Card
                         className="card"
@@ -492,7 +443,7 @@ const MyProfile = ({ socket }) => {
                             size={24}
                             className="comment_button"
                           />
-                          <div className="flex_row" style={{ marginBottom: "5px"}}>
+                          <div className="flex_row" style={{ marginBottom: "5px" }}>
                             <div>
                               {data.like.length >= 2 ? (
                                 <Card.Text>{data.like.length} likes</Card.Text>
@@ -500,7 +451,7 @@ const MyProfile = ({ socket }) => {
                                 <Card.Text>{data.like.length} like</Card.Text>
                               )}
                             </div>
-                            <div style={{marginLeft: "10px"}}>
+                            <div style={{ marginLeft: "10px" }}>
                               {data.comments.length >= 2 ? (
                                 <Card.Text>
                                   {data.comments.length} comments
@@ -564,8 +515,7 @@ const MyProfile = ({ socket }) => {
             />
           )}
         </div>
-      )}
-      {isLoggedIn === "false" && <PageNotFound />}
+      ) : <PageNotFound />}
     </div>
   );
 };
