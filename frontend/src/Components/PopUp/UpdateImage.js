@@ -11,7 +11,7 @@ const UpdateImage = (props) => {
   });
 
   const handleSubmit = (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     if (!data.title || !data.caption) {
       alert("Please fill all the fields!");
     } else {
@@ -21,11 +21,11 @@ const UpdateImage = (props) => {
         )
         .then((res) => {
           alert(res.data.message);
+          props.updateData(true);
         })
         .catch((err) => {
           console.log(err);
         });
-        console.log(data)
     }
   };
 

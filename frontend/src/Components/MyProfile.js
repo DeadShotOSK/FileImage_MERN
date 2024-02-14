@@ -24,7 +24,7 @@ import PageNotFound from "./PageNotFound";
 
 import "./MyProfile.css";
 
-const MyProfile = ({ socket, isLoggedIn }) => {
+const MyProfile = ({ socket, updateData, isLoggedIn }) => {
   const [myProfile, setMyProfile] = useState({});
   const [updateuserBox, setUpdateUserBox] = useState(false);
   const userUpdateHandler = () => {
@@ -201,7 +201,7 @@ const MyProfile = ({ socket, isLoggedIn }) => {
         )
         .then((res) => {
           alert(res.data.message);
-          window.location.reload();
+          updateData(true);
         })
         .catch((err) => {
           console.log(err);
@@ -236,7 +236,7 @@ const MyProfile = ({ socket, isLoggedIn }) => {
         )
         .then((res) => {
           alert(res.data.message);
-          window.location.reload();
+          updateData(true);
         })
         .catch((err) => {
           console.log(err);
@@ -385,6 +385,7 @@ const MyProfile = ({ socket, isLoggedIn }) => {
                               title={updateImageData.title}
                               imageId={updateImageData.updateImageId}
                               userId={userid}
+                              updateData={updateData}
                             ></UpdateImage>
                           )}
                         </Card.Body>
@@ -493,6 +494,7 @@ const MyProfile = ({ socket, isLoggedIn }) => {
                               title={updateFileData.title}
                               fileId={updateFileData.updateFileId}
                               userId={userid}
+                              updateData={updateData}
                             ></UpdateFile>
                           )}
                         </Card.Body>

@@ -23,6 +23,7 @@ import PageNotFound from "./Components/PageNotFound";
 function App() {
   const [currentUser, setCurrentUser] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [updateReduxStore, setUpdateReduxStore] = useState(false);
 
   const token = Cookies.get("token");
   // for storinng current user to local strorage
@@ -52,6 +53,10 @@ function App() {
       });
   }, [dispatch, token]);
 
+  const updateData = (data) => {
+    setUpdateReduxStore(data);
+  }
+
   // For Images => redux store
   useEffect(() => {
     axios
@@ -79,7 +84,8 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, [dispatch]);
+      setUpdateReduxStore(false);
+  }, [dispatch, updateReduxStore]);
 
   return (
     <>
@@ -87,8 +93,8 @@ function App() {
         <NavBar currentUser={currentUser} isLoggedIn={isLoggedIn} loginLogout={loginLogout} />
         <Routes>
           <Route exact path="/" element={<AllUsers />}></Route>
-          <Route exact path="/myProfile/:userid" element={<MyProfile isLoggedIn={isLoggedIn} socket={socket} />}></Route>
-          <Route exact path="/imageUpload/:userid" element={<ImageUpload isLoggedIn={isLoggedIn} />}></Route>
+          <Route exact path="/myProfile/:userid" element={<MyProfile isLoggedIn={isLoggedIn} socket={socket} updateData={updateData} />}></Route>
+          <Route exact path="/imageUpload/:userid" element={<ImageUpload isLoggedIn={isLoggedIn} updateData={updateData} />}></Route>
           <Route exact path="/allusers" element={<AllUsers isLoggedIn={isLoggedIn} />}></Route>
           <Route exact path="/alluserdetails" element={<UserDetails isLoggedIn={isLoggedIn} />}></Route>
           <Route exact path="/image/:userid" element={<ShowImage isLoggedIn={isLoggedIn} socket={socket} />}></Route>

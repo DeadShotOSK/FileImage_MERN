@@ -7,7 +7,7 @@ import PageNotFound from "../PageNotFound";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ImageUpload.css";
 
-const ImageForm = ({ isLoggedIn }) => {
+const ImageForm = ({ isLoggedIn, updateData }) => {
   const [formData, setFormData] = useState({
     title: "",
     caption: "",
@@ -55,7 +55,6 @@ const ImageForm = ({ isLoggedIn }) => {
       ...formData,
       [name]: value,
     });
-    console.log(name, value)
     validateField(name, value);
   };
 
@@ -116,7 +115,7 @@ const ImageForm = ({ isLoggedIn }) => {
           if (res.data.status === "Success") {
             alert(res.data.message);
             navigate(`/image/${userid}`);
-            window.location.reload();
+            updateData(true);
           }
         })
         .catch((err) => {
