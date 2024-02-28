@@ -440,3 +440,21 @@ exports.fileComment = async (req, res) => {
     });
   }
 }
+
+exports.deleteImageComment = async (req, res) => {
+  try {
+    // const { imageId, postedById, commentId } = req.body;
+    
+
+    // if () {
+    //   res.status(200).json({
+        
+    //   })
+    // }
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({
+      message: "Something Went Wrong!",
+    });
+  }
+}

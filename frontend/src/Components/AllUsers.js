@@ -1,11 +1,12 @@
+import React, { useContext, useEffect, useState } from "react";
+import { GlobalData } from "../App"; 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-
 import PageNotFound from "./PageNotFound";
 
 import "./AllUsers.css";
 
-const AllUsers = ({ isLoggedIn }) => {
+const AllUsers = () => {
+  const { isLoggedIn } = useContext(GlobalData);
   const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {

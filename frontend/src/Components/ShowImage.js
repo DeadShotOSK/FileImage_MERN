@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
@@ -9,6 +9,7 @@ import { addImages, getAllImages } from "../Redux/ImageReducers";
 import { FaRegComment } from "react-icons/fa6";
 import { addfiles, getAllFiles } from "../Redux/FileReducers";
 import { useMediaQuery } from "react-responsive";
+import { GlobalData } from "../App";
 
 import PageNotFound from "./PageNotFound";
 import LikeImageButton from "./LikeDislikeButtons/LikeImageButton";
@@ -21,7 +22,8 @@ import FileComment from "./PopUp/FileComment";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ShowImage.css";
 
-const ShowImage = ({ socket, isLoggedIn }) => {
+const ShowImage = ({ socket }) => {
+  const { isLoggedIn } = useContext(GlobalData);
   const [search, setSearch] = useState("");
   const [imageCommentBox, setimageCommentBox] = useState(false);
   const [fileCommentBox, setFileCommentBox] = useState(false);
@@ -57,25 +59,39 @@ const ShowImage = ({ socket, isLoggedIn }) => {
 
   const isTableOrMobile = useMediaQuery({ query: "(max-width: 992px)" });
 
-  // Socket Connections
+  const handleUpdateLikeDislikeImage = useCallback((update) => {
+    dispatch(addImages(update));
+  }, [dispatch]);
+
+  const handleUpdateLikeDislikeFile = useCallback((update) => {
+    dispatch(addfiles(update));
+  }, [dispatch]);
+
+  const handleUpdateImageComment = useCallback((update) => {
+    dispatch(addImages(update));
+  }, [dispatch]);
+
+  const handleUpdateFileComment = useCallback((update) => {
+    dispatch(addfiles(update));
+  }, [dispatch]);
+
   useEffect(() => {
     // Image Like/Dislike
-    socket.on("updated-likeAndDislike", (update) => {
-      dispatch(addImages(update));
-    });
+    socket.on("updated-likeAndDislike", handleUpdateLikeDislikeImage);
     // File Like/Dislike
-    socket.on("updated-likeAndDislikeFile", (update) => {
-      dispatch(addfiles(update));
-    });
+    socket.on("updated-likeAndDislikeFile", handleUpdateLikeDislikeFile);
     // Image Comment
-    socket.on("update-ImageComment", (update) => {
-      dispatch(addImages(update));
-    })
+    socket.on("update-ImageComment", handleUpdateImageComment);
     // File Comment
-    socket.on("update-FileComment", (update) => {
-      dispatch(addfiles(update));
-    })
-  }, [dispatch, socket]);
+    socket.on("update-FileComment", handleUpdateFileComment);
+
+    return () => {
+      socket.off("updated-likeAndDislike", handleUpdateLikeDislikeImage);
+      socket.off("updated-likeAndDislikeFile", handleUpdateLikeDislikeFile);
+      socket.off("update-ImageComment", handleUpdateImageComment);
+      socket.off("update-FileComment", handleUpdateFileComment);
+    }
+  }, [socket, handleUpdateLikeDislikeImage, handleUpdateLikeDislikeFile, handleUpdateImageComment, handleUpdateFileComment]);
 
   // for file download
   const onClickHandler = (e) => {

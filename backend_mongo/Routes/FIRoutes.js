@@ -63,4 +63,6 @@ router.put('/imageComment', FIController.imageComment);
 
 router.put('/fileComment', FIController.fileComment);
 
+router.get('/imageComment', FIController.deleteImageComment);
+
 module.exports = router;

@@ -3,7 +3,7 @@ import axios from "axios";
 
 import "./UpdateUserDetails.css"
 
-const UpdateUserDetails = ({ token, userid }) => {
+const UpdateUserDetails = ({ token, userid, updateCurrentUserDetails }) => {
     const [updateData, setUpdateData] = useState({
         newUserName: "",
         mobile: "",
@@ -18,6 +18,7 @@ const UpdateUserDetails = ({ token, userid }) => {
             })
             .then((res) => {
                 alert(res.data.message);
+                updateCurrentUserDetails(true);
             })
             .catch((err) => {
                 console.log(err);

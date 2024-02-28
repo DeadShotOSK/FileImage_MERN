@@ -7,7 +7,7 @@ import NavComp from "./NavComp";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./NavBar.css"
 
-const NavBar = ({ currentUser, isLoggedIn, loginLogout }) => {
+const NavBar = ({ currentUser, isLoggedIn }) => {
   const [hamBurger, setHamBurger] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const isTableOrMobile = useMediaQuery({ query: "(max-width: 992px)" });
@@ -32,7 +32,7 @@ const NavBar = ({ currentUser, isLoggedIn, loginLogout }) => {
 
               {hamBurger && isTableOrMobile && (
                 <div className={isShow ? "ModalOpen" : "ModalClosed"}>
-                  <NavComp currentUser={currentUser} loginLogout={loginLogout} />
+                  <NavComp currentUser={currentUser} />
                 </div>
               )}
             </div>

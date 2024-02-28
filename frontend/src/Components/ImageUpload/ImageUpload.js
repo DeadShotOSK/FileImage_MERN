@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { GlobalData } from "../../App"; 
 import axios from "axios";
 
 import PageNotFound from "../PageNotFound";
@@ -7,7 +8,8 @@ import PageNotFound from "../PageNotFound";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ImageUpload.css";
 
-const ImageForm = ({ isLoggedIn, updateData }) => {
+const ImageForm = ({ updateData }) => {
+  const { isLoggedIn } = useContext(GlobalData);
   const [formData, setFormData] = useState({
     title: "",
     caption: "",

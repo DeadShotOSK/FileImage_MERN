@@ -1,12 +1,15 @@
-import React from "react";
+import React ,{ useContext } from "react";
 import { useMediaQuery } from 'react-responsive';
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
+import { GlobalData } from "../../App";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./NavBar.css";
 
-const NavComp = ({ currentUser, loginLogout }) => {
+const NavComp = ({ currentUser }) => {
+    const { loginLogout } = useContext(GlobalData);
     const navigate = useNavigate();
     const handleLogout = (e) => {
         e.preventDefault();

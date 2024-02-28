@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext, useCallback } from "react";
 import axios from "axios";
 import Cookie from "js-cookie";
 import Button from "react-bootstrap/Button";
@@ -9,6 +9,7 @@ import { getAllFiles, addfiles } from "../Redux/FileReducers";
 import { getAllImages, addImages } from "../Redux/ImageReducers";
 import { FaRegComment } from "react-icons/fa6";
 import { useMediaQuery } from "react-responsive";
+import { GlobalData } from "../App";
 
 import LikeImageButton from "./LikeDislikeButtons/LikeImageButton";
 import DislikeImageButton from "./LikeDislikeButtons/DislikeImageButton";
@@ -24,7 +25,8 @@ import PageNotFound from "./PageNotFound";
 
 import "./MyProfile.css";
 
-const MyProfile = ({ socket, updateData, isLoggedIn }) => {
+const MyProfile = ({ socket, updateData }) => {
+  const { isLoggedIn } = useContext(GlobalData);
   const [myProfile, setMyProfile] = useState({});
   const [updateuserBox, setUpdateUserBox] = useState(false);
   const userUpdateHandler = () => {
@@ -102,6 +104,11 @@ const MyProfile = ({ socket, updateData, isLoggedIn }) => {
   const token = Cookie.get("token");
   const dispatch = useDispatch();
 
+  const [updateCurrentUser, setUpdateCurrentUser] = useState(false);
+  const updateCurrentUserDetails = (data) => {
+    setUpdateCurrentUser(data);
+  }
+
   useEffect(() => {
     // console.log(myProfile);
     const headers = { Authorization: `Bearer ${token}` };
@@ -113,7 +120,8 @@ const MyProfile = ({ socket, updateData, isLoggedIn }) => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, userid, updateuserBox]);
+    updateCurrentUserDetails(false);
+  }, [token, userid, updateCurrentUser]);
 
   // myProfile.userdetails = useSelector(getAllUsers).filter(data => data._id.includes(userid))[0];
   const images = useSelector(getAllImages).filter((data) =>
@@ -124,29 +132,43 @@ const MyProfile = ({ socket, updateData, isLoggedIn }) => {
   );
   // console.log(myProfile);
 
+  const handleUpdateLikeDislikeImage = useCallback((update) => {
+    dispatch(addImages(update));
+  }, [dispatch]);
+
+  const handleUpdateLikeDislikeFile = useCallback((update) => {
+    dispatch(addfiles(update));
+  }, [dispatch]);
+
+  const handleUpdateImageComment = useCallback((update) => {
+    dispatch(addImages(update));
+  }, [dispatch]);
+
+  const handleUpdateFileComment = useCallback((update) => {
+    dispatch(addfiles(update));
+  }, [dispatch]);
+
   useEffect(() => {
     // Image Like/Dislike
-    socket.on("updated-likeAndDislike", (update) => {
-      dispatch(addImages(update));
-    });
+    socket.on("updated-likeAndDislike", handleUpdateLikeDislikeImage);
     // File Like/Dislike
-    socket.on("updated-likeAndDislikeFile", (update) => {
-      dispatch(addfiles(update));
-    });
+    socket.on("updated-likeAndDislikeFile", handleUpdateLikeDislikeFile);
     // Image Comment
-    socket.on("update-ImageComment", (update) => {
-      dispatch(addImages(update));
-    })
+    socket.on("update-ImageComment", handleUpdateImageComment);
     // File Comment
-    socket.on("update-FileComment", (update) => {
-      dispatch(addfiles(update));
-    })
-  }, [dispatch, socket]);
+    socket.on("update-FileComment", handleUpdateFileComment);
+
+    return () => {
+      socket.off("updated-likeAndDislike", handleUpdateLikeDislikeImage);
+      socket.off("updated-likeAndDislikeFile", handleUpdateLikeDislikeFile);
+      socket.off("update-ImageComment", handleUpdateImageComment);
+      socket.off("update-FileComment", handleUpdateFileComment);
+    }
+  }, [socket, handleUpdateLikeDislikeImage, handleUpdateLikeDislikeFile, handleUpdateImageComment, handleUpdateFileComment]);
 
   const onClickHandler = (e) => {
     e.preventDefault();
     let parameter = e.target.innerText;
-
     axios
       .get(`http://localhost:7000/fi/getUploadedFile/${parameter}`, {
         responseType: "blob",
@@ -276,7 +298,7 @@ const MyProfile = ({ socket, updateData, isLoggedIn }) => {
               </button>
               <div className={updateuserBox ? "userDetailsBoxOpen" : "userDetailsBoxClosed"}>
                 {updateuserBox && (
-                  <UpdateUserDetails token={token} userid={userid} />
+                  <UpdateUserDetails token={token} userid={userid} updateCurrentUserDetails={updateCurrentUserDetails} />
                 )}
               </div>
             </div>

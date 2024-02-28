@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
+import { GlobalData } from "../../App";
 
 // import LoadingSpinner from "../PopUp/LodingSpinner";
 
 import "./Login.css";
 import PageNotFound from "../PageNotFound";
 
-const Login = ({ isLoggedIn, loginLogout }) => {
+const Login = () => {
+  const { loginLogout ,isLoggedIn } = useContext(GlobalData);
   const [user, setuser] = useState({
     email: "",
     password: "",

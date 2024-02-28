@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSelector } from "react-redux";
 import { getAllUsers } from "../Redux/UserReducer";
+import { GlobalData } from "../App";
 
 import PageNotFound from "./PageNotFound";
 
 import "./AllUsers.css";
 
-const AllUsers = ({ isLoggedIn }) => {
+const AllUsers = () => {
+  const { isLoggedIn } = useContext(GlobalData);
   const allUsers = useSelector(getAllUsers);
 
   return (
